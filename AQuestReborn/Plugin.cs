@@ -155,11 +155,11 @@ public sealed class Plugin : IDalamudPlugin
         WindowSystem.AddWindow(MainWindow);
         CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
         {
-            HelpMessage = "Opens settings."
+            HelpMessage = "打开设置"
         });
         CommandManager.AddHandler(CommandName2, new CommandInfo(OnCommandChat)
         {
-            HelpMessage = "For chat objectives"
+            HelpMessage = "用于聊天目标"
         });
 
         PluginInterface.UiBuilder.Draw += DrawUI;
