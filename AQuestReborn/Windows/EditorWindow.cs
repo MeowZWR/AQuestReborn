@@ -136,26 +136,26 @@ public class EditorWindow : Window, IDisposable
                 // 内容评级中文映射
                 var contentRatingTypesTranslated = contentRatingTypes.Select(name =>
                 {
-                    switch (name)
+                    return name switch
                     {
-                        case "AllAges": return "所有年龄";
-                        case "Teen": return "青少年";
-                        case "AdultsOnly": return "仅限成人";
-                        default: return name;
-                    }
+                        "AllAges"       => "所有年龄",
+                        "Teen"          => "青少年",
+                        "AdultsOnly"    => "仅限成人",
+                        _ => name,
+                    };
                 }).ToArray();
 
                 // 任务奖励类型中文映射
                 var questRewardTypesTranslated = questRewardTypes.Select(name =>
                 {
-                    switch (name)
+                    return name switch
                     {
-                        case "None": return "无奖励";
-                        case "SecretMessage": return "秘密信息";
-                        case "OnlineLink": return "在线链接";
-                        case "MediaFile": return "媒体文件";
-                        default: return name;
-                    }
+                        "None"              => "无奖励",
+                        "SecretMessage"     => "秘密信息",
+                        "OnlineLink"        => "在线链接",
+                        "MediaFile"         => "媒体文件",
+                        _ => name,
+                    };
                 }).ToArray();
 
                 ImGui.BeginTable("##Info Table", 2);
@@ -312,40 +312,40 @@ public class EditorWindow : Window, IDisposable
             // 任务目标触发类型中文映射
             var objectiveTriggerTypesTranslated = objectiveTriggerTypes.Select(name =>
             {
-                switch (name)
+                return name switch
                 {
-                    case "NormalInteraction": return "正常互动";
-                    case "DoEmote": return "执行表情";
-                    case "SayPhrase": return "说出语句";
-                    case "SubObjectivesFinished": return "子目标完成";
-                    case "KillEnemy": return "击杀敌人";
-                    case "BoundingTrigger": return "边界触发";
-                    default: return name;
-                }
+                    "NormalInteraction"         => "正常互动",
+                    "DoEmote"                   => "执行表情",
+                    "SayPhrase"                 => "说出语句",
+                    "SubObjectivesFinished"     => "子目标完成",
+                    "KillEnemy"                 => "击杀敌人",
+                    "BoundingTrigger"           => "边界触发",
+                    _ => name,
+                };
             }).ToArray();
 
             // 任务目标状态类型中文映射
             var objectiveStatusTypesTranslated = objectiveStatusTypes.Select(name =>
             {
-                switch (name)
+                return name switch
                 {
-                    case "Pending": return "待处理";
-                    case "Complete": return "已完成";
-                    default: return name;
-                }
+                    "Pending"   => "待处理",
+                    "Complete"  => "已完成",
+                    _ => name,
+                };
             }).ToArray();
 
             // 任务点类型中文映射
             var questPointTypesTranslated = questPointTypes.Select(name =>
             {
-                switch (name)
+                return name switch
                 {
-                    case "NPC": return "NPC";
-                    case "GroundItem": return "地面物品";
-                    case "TallItem": return "高处物品";
-                    case "StandAndWait": return "站立等待";
-                    default: return name;
-                }
+                    "NPC"           => "NPC",
+                    "GroundItem"    => "地面物品",
+                    "TallItem"      => "高处物品",
+                    "StandAndWait"  => "站立等待",
+                    _ => name,
+                };
             }).ToArray();
 
             ImGui.SetNextItemWidth(400);
@@ -559,61 +559,78 @@ public class EditorWindow : Window, IDisposable
                 var npcMovementPosition = item.NpcMovementPosition;
                 var npcMovementRotation = item.NpcMovementRotation;
 
+                // 事件发生条件中文映射
+                var eventConditionTypesTranslated = eventConditionTypes.Select(name =>
+                {
+                    return name switch
+                    {
+                        "None"                          => "无",
+                        "CompletedSpecificObjectiveId"  => "完成特定目标ID",
+                        "PlayerClanId"                  => "玩家兵团ID",
+                        "PlayerPhysicalPresentationId"  => "玩家外观ID",
+                        "PlayerClassId"                 => "玩家职业ID",
+                        "PlayerOutfitTopId"             => "玩家上装ID",
+                        "PlayerOutfitBottomId"          => "玩家下装ID",
+                        "TimeLimitFailure"              => "超时失败",
+                        _ => name,
+                    };
+                }).ToArray();
+
                 // 事件背景类型中文映射
                 var eventBackgroundTypesTranslated = eventBackgroundTypes.Select(name =>
                 {
-                    switch (name)
+                    return name switch
                     {
-                        case "None": return "无背景";
-                        case "Image": return "图片";
-                        case "Video": return "视频";
-                        case "ImageTransparent": return "透明图片";
-                        default: return name;
-                    }
+                        "None"              => "无背景",
+                        "Image"             => "图片",
+                        "Video"             => "视频",
+                        "ImageTransparent"  => "透明图片",
+                        _ => name,
+                    };
                 }).ToArray();
 
                 // 事件结束行为中文映射
                 var eventEndTypesTranslated = eventEndTypes.Select(name =>
                 {
-                    switch (name)
+                    return name switch
                     {
-                        case "None": return "无行为";
-                        case "EventSkipsToDialogueNumber": return "跳过对话编号";
-                        case "EventEndsEarlyWhenHit": return "被击中时提前结束";
-                        case "EventEndsEarlyWhenHitNoProgression": return "被击中时提前结束（无进度）";
-                        case "EventEndsEarlyWhenHitAndSkipsToObjective": return "被击中时提前结束并跳到目标";
-                        case "EventEndsEarlyWhenHitAndNPCFollowsPlayer": return "被击中时提前结束并NPC跟随玩家";
-                        case "EventEndsEarlyWhenHitAndNPCStopsFollowingPlayer": return "被击中时提前结束并NPC停止跟随玩家";
-                        case "NPCFollowsPlayer": return "NPC跟随玩家";
-                        case "NPCStopsFollowingPlayer": return "NPC停止跟随玩家";
-                        case "EventEndsEarlyWhenHitAndStartsTimer": return "被击中时提前结束并启动计时器";
-                        case "StartsTimer": return "启动计时器";
-                        default: return name;
-                    }
+                        "None" => "无行为",
+                        "EventSkipsToDialogueNumber"                        => "跳过对话编号",
+                        "EventEndsEarlyWhenHit"                             => "被击中时提前结束",
+                        "EventEndsEarlyWhenHitNoProgression"                => "被击中时提前结束（无进度）",
+                        "EventEndsEarlyWhenHitAndSkipsToObjective"          => "被击中时提前结束并跳到目标",
+                        "EventEndsEarlyWhenHitAndNPCFollowsPlayer"          => "被击中时提前结束并NPC跟随玩家",
+                        "EventEndsEarlyWhenHitAndNPCStopsFollowingPlayer"   => "被击中时提前结束并NPC停止跟随玩家",
+                        "NPCFollowsPlayer"                                  => "NPC跟随玩家",
+                        "NPCStopsFollowingPlayer"                           => "NPC停止跟随玩家",
+                        "EventEndsEarlyWhenHitAndStartsTimer"               => "被击中时提前结束并启动计时器",
+                        "StartsTimer"                                       => "启动计时器",
+                        _=> name,
+                    };
                 }).ToArray();
 
                 // 玩家外观替换类型中文映射
                 var eventPlayerAppearanceApplicationTypesTranslated = eventPlayerAppearanceApplicationTypes.Select(name =>
                 {
-                    switch (name)
+                    return name switch
                     {
-                        case "EntireAppearance": return "完整外观";
-                        case "RevertAppearance": return "恢复外观";
-                        case "PreserveRace": return "保留种族";
-                        case "PreserveMasculinityAndFemininity": return "保留性别特征";
-                        case "PreserveAllPhysicalTraits": return "保留所有身体特征";
-                        case "OnlyGlamourerData": return "仅保留 Glamourer 数据";
-                        case "OnlyCustomizeData": return "仅保留外貌数据";
-                        case "OnlyModData": return "仅保留模组数据";
-                        default: return name;
-                    }
+                        "EntireAppearance"                  => "完整外观",
+                        "RevertAppearance"                  => "恢复外观",
+                        "PreserveRace"                      => "保留种族",
+                        "PreserveMasculinityAndFemininity"  => "保留性别特征",
+                        "PreserveAllPhysicalTraits"         => "保留所有身体特征",
+                        "OnlyGlamourerData"                 => "仅保留 Glamourer 数据",
+                        "OnlyCustomizeData"                 => "仅保留外貌数据",
+                        "OnlyModData"                       => "仅保留模组数据",
+                        _ => name,
+                    };
                 }).ToArray();
 
                 if (ImGui.BeginTabBar("事件编辑器标签"))
                 {
                     if (ImGui.BeginTabItem("叙事"))
                     {
-                        if (ImGui.Combo("事件发生条件##", ref dialogueCondition, eventConditionTypes, eventConditionTypes.Length))
+                        if (ImGui.Combo("事件发生条件##", ref dialogueCondition, eventConditionTypesTranslated, eventConditionTypesTranslated.Length))
                         {
                             item.ConditionForDialogueToOccur = (EventConditionType)dialogueCondition;
                         }
@@ -915,14 +932,14 @@ public class EditorWindow : Window, IDisposable
                     // 分支选择类型中文映射
                     var branchingChoiceTypesTranslated = branchingChoiceTypes.Select(name =>
                     {
-                        switch (name)
+                        return name switch
                         {
-                            case "SkipToEventNumber": return "跳过至事件编号";
-                            case "BranchingQuestline": return "分支任务线";
-                            case "RollD20ThenSkipToEventNumber": return "掷D20后跳过至事件编号";
-                            case "SkipToEventNumberRandomized": return "随机跳过至事件编号";
-                            default: return name;
-                        }
+                            "SkipToEventNumber"             => "跳过至事件编号",
+                            "BranchingQuestline"            => "分支任务线",
+                            "RollD20ThenSkipToEventNumber"  => "掷D20后跳过至事件编号",
+                            "SkipToEventNumberRandomized"   => "随机跳过至事件编号",
+                            _ => name,
+                        };
                     }).ToArray();
 
                     if (ImGui.InputText("选择文本##", ref choiceText, 255))
