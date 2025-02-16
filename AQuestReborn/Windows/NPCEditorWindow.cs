@@ -29,7 +29,7 @@ public class NPCEditorWindow : Window, IDisposable
     // So that the user will see "My Amazing Window" as window title,
     // but for ImGui the ID is "My Amazing Window##With a hidden ID"
     public NPCEditorWindow(Plugin plugin)
-        : base("NPC Editor Window##" + Guid.NewGuid().ToString(), ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
+        : base("NPC 编辑窗口##" + Guid.NewGuid().ToString(), ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
     {
         SizeConstraints = new WindowSizeConstraints
         {
@@ -52,8 +52,8 @@ public class NPCEditorWindow : Window, IDisposable
     public override void Draw()
     {
         ImGui.BeginTable("##NPC Creation Table", 2);
-        ImGui.TableSetupColumn("NPC Creation List", ImGuiTableColumnFlags.WidthFixed, 150);
-        ImGui.TableSetupColumn("NPC Creation Editor", ImGuiTableColumnFlags.WidthStretch);
+        ImGui.TableSetupColumn("NPC 创建列表", ImGuiTableColumnFlags.WidthFixed, 150);
+        ImGui.TableSetupColumn("NPC 创建编辑器", ImGuiTableColumnFlags.WidthStretch);
         ImGui.TableHeadersRow();
         ImGui.TableNextRow();
         ImGui.TableSetColumnIndex(0);
@@ -74,11 +74,11 @@ public class NPCEditorWindow : Window, IDisposable
                 var npcName = item.NpcName;
                 var appearanceData = item.AppearanceData;
                 var branchingChoiceTypes = Enum.GetNames(typeof(BranchingChoiceType));
-                if (ImGui.InputText("Npc Name##", ref npcName, 40))
+                if (ImGui.InputText("NPC 名称##", ref npcName, 40))
                 {
                     item.NpcName = npcName;
                 }
-                if (ImGui.InputText("Npc Appearance Data##", ref appearanceData, 255))
+                if (ImGui.InputText("NPC 外观数据##", ref appearanceData, 255))
                 {
                     item.AppearanceData = appearanceData;
                 }
@@ -87,7 +87,7 @@ public class NPCEditorWindow : Window, IDisposable
                 {
                     ImGui.BeginDisabled();
                 }
-                if (ImGui.Button(_isCreatingAppearance ? "Creating Appearance Please Wait" : "Create NPC Appearance From Player Appearance##"))
+                if (ImGui.Button(_isCreatingAppearance ? "正在创建外观，请稍候" : "从玩家外观创建 NPC 外观##"))
                 {
                     Task.Run(() =>
                     {
@@ -120,18 +120,18 @@ public class NPCEditorWindow : Window, IDisposable
             {
                 //RefreshMenus();
             }
-            if (ImGui.Button("Add"))
+            if (ImGui.Button("添加"))
             {
                 var npcCustomization = new NpcInformation();
                 npcCustomizations[npcCustomizations.Count] = npcCustomization;
-                _npcCustomizations = Utility.FillNewList(npcCustomizations.Count, "NPC Appearance");
+                _npcCustomizations = Utility.FillNewList(npcCustomizations.Count, "NPC 外观");
                 _selectedNpcCustomization = _npcCustomizations.Length - 1;
             }
             ImGui.SameLine();
-            if (ImGui.Button("Remove"))
+            if (ImGui.Button("移除"))
             {
                 npcCustomizations.Remove(_selectedNpcCustomization);
-                _npcCustomizations = Utility.FillNewList(npcCustomizations.Count, "NPC Appearance");
+                _npcCustomizations = Utility.FillNewList(npcCustomizations.Count, "NPC 外观");
                 _selectedNpcCustomization = _npcCustomizations.Length - 1;
             }
         }
@@ -139,7 +139,7 @@ public class NPCEditorWindow : Window, IDisposable
 
     private void RefreshMenus()
     {
-        _npcCustomizations = Utility.FillNewList(_roleplayingQuest.NpcCustomizations.Count, "NPC Appearance");
+        _npcCustomizations = Utility.FillNewList(_roleplayingQuest.NpcCustomizations.Count, "NPC 外观");
         _selectedNpcCustomization = _npcCustomizations.Length - 1;
     }
 }
