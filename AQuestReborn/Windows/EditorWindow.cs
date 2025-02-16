@@ -42,8 +42,8 @@ public class EditorWindow : Window, IDisposable
     private int _selectedBranchingChoice;
     private string[] _branchingChoices = new string[] { };
     private string[] _boxStyles = new string[] {
-        "Normal", "Style2", "Telepathic", "Omicron/Machine", "Shout",
-        "Written Lore", "Monster/Creature", "Dragon/Linkpearl", "System/Ascian" };
+        "Normal（普通）", "Style2（风格2）", "Telepathic（心灵感应）", "Omicron/Machine（奥密克戎/机械）", "Shout（喊叫）",
+        "Written Lore（书面传说）", "Monster/Creature（怪物/生物）", "Dragon/Linkpearl（龙/通讯珠）", "System/Ascian（系统/无影）" };
     private QuestObjective _objectiveInFocus;
     private float _globalScale;
     private bool _shiftModifierHeld;
@@ -96,18 +96,18 @@ public class EditorWindow : Window, IDisposable
         _fileDialogManager.Draw();
         if (!_roleplayingQuestCreator.CurrentQuest.IsSubQuest)
         {
-            if (ImGui.Button("Save Quest"))
+            if (ImGui.Button("保存任务"))
             {
                 PersistQuest();
             }
             ImGui.SameLine();
-            if (ImGui.Button("New Quest"))
+            if (ImGui.Button("新建任务"))
             {
                 _roleplayingQuestCreator.EditQuest(new RoleplayingQuest());
                 RefreshMenus();
             }
             ImGui.SameLine();
-            if (ImGui.Button("Tutorial"))
+            if (ImGui.Button("教程（跳转Youtube）"))
             {
                 ProcessStartInfo ProcessInfo = new ProcessStartInfo();
                 Process Process = new Process();
@@ -133,82 +133,107 @@ public class EditorWindow : Window, IDisposable
                 var questEndTitleSound = _roleplayingQuestCreator.CurrentQuest.QuestEndTitleSound;
                 var hasQuestAcceptancePopup = _roleplayingQuestCreator.CurrentQuest.HasQuestAcceptancePopup;
 
+                // 内容评级中文映射
+                var contentRatingTypesTranslated = contentRatingTypes.Select(name =>
+                {
+                    switch (name)
+                    {
+                        case "AllAges": return "所有年龄";
+                        case "Teen": return "青少年";
+                        case "AdultsOnly": return "仅限成人";
+                        default: return name;
+                    }
+                }).ToArray();
+
+                // 任务奖励类型中文映射
+                var questRewardTypesTranslated = questRewardTypes.Select(name =>
+                {
+                    switch (name)
+                    {
+                        case "None": return "无奖励";
+                        case "SecretMessage": return "秘密信息";
+                        case "OnlineLink": return "在线链接";
+                        case "MediaFile": return "媒体文件";
+                        default: return name;
+                    }
+                }).ToArray();
+
                 ImGui.BeginTable("##Info Table", 2);
-                ImGui.TableSetupColumn("Info 1", ImGuiTableColumnFlags.WidthFixed, 400);
-                ImGui.TableSetupColumn("Info 2", ImGuiTableColumnFlags.WidthStretch, 600);
+                ImGui.TableSetupColumn("信息 1", ImGuiTableColumnFlags.WidthFixed, 400);
+                ImGui.TableSetupColumn("信息 2", ImGuiTableColumnFlags.WidthStretch, 600);
                 ImGui.TableHeadersRow();
                 ImGui.TableNextRow();
                 ImGui.TableSetColumnIndex(0);
-                if (ImGui.InputText("Author##", ref questAuthor, 255))
+                if (ImGui.InputText("作者##", ref questAuthor, 255))
                 {
                     _roleplayingQuestCreator.CurrentQuest.QuestAuthor = questAuthor;
                 }
-                if (ImGui.InputText("Quest Name##", ref questName, 255))
+                if (ImGui.InputText("任务名称##", ref questName, 255))
                 {
                     _roleplayingQuestCreator.CurrentQuest.QuestName = questName;
                 }
-                if (ImGui.InputText("Quest Description##", ref questDescription, 56))
+                if (ImGui.InputText("任务描述##", ref questDescription, 56))
                 {
                     _roleplayingQuestCreator.CurrentQuest.QuestDescription = questDescription;
                 }
-                if (ImGui.InputText("Quest Thumbnail##", ref questThumbnail, 255))
+                if (ImGui.InputText("任务缩略图##", ref questThumbnail, 255))
                 {
                     _roleplayingQuestCreator.CurrentQuest.QuestThumbnailPath = questThumbnail;
                 }
-                if (ImGui.Combo("Content Rating##", ref contentRating, contentRatingTypes, contentRatingTypes.Length))
+                if (ImGui.Combo("内容评级##", ref contentRating, contentRatingTypesTranslated, contentRatingTypesTranslated.Length))
                 {
                     _roleplayingQuestCreator.CurrentQuest.ContentRating = (QuestContentRating)contentRating;
                 }
-                if (ImGui.Checkbox("Has Quest Acceptance Popup", ref hasQuestAcceptancePopup))
+                if (ImGui.Checkbox("有任务接受弹窗", ref hasQuestAcceptancePopup))
                 {
                     _roleplayingQuestCreator.CurrentQuest.HasQuestAcceptancePopup = hasQuestAcceptancePopup;
                 }
                 ImGui.TableSetColumnIndex(1);
-                if (ImGui.InputText("Quest Start Title Card##", ref questStartTitleCard, 255))
+                if (ImGui.InputText("任务开始标题卡##", ref questStartTitleCard, 255))
                 {
                     _roleplayingQuestCreator.CurrentQuest.QuestStartTitleCard = questStartTitleCard;
                 }
-                if (ImGui.InputText("Quest End Title Card##", ref questEndTitleCard, 255))
+                if (ImGui.InputText("任务结束标题卡##", ref questEndTitleCard, 255))
                 {
                     _roleplayingQuestCreator.CurrentQuest.QuestEndTitleCard = questEndTitleCard;
                 }
-                if (ImGui.InputText("Quest Start Title Sound##", ref questStartTitleSound, 255))
+                if (ImGui.InputText("任务开始标题音效##", ref questStartTitleSound, 255))
                 {
                     _roleplayingQuestCreator.CurrentQuest.QuestStartTitleSound = questStartTitleSound;
                 }
-                if (ImGui.InputText("Quest End Title Sound##", ref questEndTitleSound, 255))
+                if (ImGui.InputText("任务结束标题音效##", ref questEndTitleSound, 255))
                 {
                     _roleplayingQuestCreator.CurrentQuest.QuestEndTitleSound = questEndTitleSound;
                 }
 
 
-                if (ImGui.Combo("Quest Reward Type##", ref questRewardType, questRewardTypes, questRewardTypes.Length))
+                if (ImGui.Combo("任务奖励类型##", ref questRewardType, questRewardTypesTranslated, questRewardTypesTranslated.Length))
                 {
                     _roleplayingQuestCreator.CurrentQuest.TypeOfReward = (QuestRewardType)questRewardType;
                 }
                 switch (_roleplayingQuestCreator.CurrentQuest.TypeOfReward)
                 {
                     case QuestRewardType.SecretMessage:
-                        if (ImGui.InputText("Quest Reward (Secret Message)", ref questReward, 255))
+                        if (ImGui.InputText("任务奖励 (秘密信息)", ref questReward, 255))
                         {
                             _roleplayingQuestCreator.CurrentQuest.QuestReward = questReward;
                         }
                         break;
                     case QuestRewardType.OnlineLink:
-                        if (ImGui.InputText("Quest Reward (Download Link)", ref questReward, 255))
+                        if (ImGui.InputText("任务奖励 (下载链接)", ref questReward, 255))
                         {
                             _roleplayingQuestCreator.CurrentQuest.QuestReward = questReward;
                         }
                         break;
                     case QuestRewardType.MediaFile:
-                        if (ImGui.InputText("Quest Reward (Media File Path)", ref questReward, 255))
+                        if (ImGui.InputText("任务奖励 (媒体文件路径)", ref questReward, 255))
                         {
                             _roleplayingQuestCreator.CurrentQuest.QuestReward = questReward;
                         }
                         break;
                 }
                 ImGui.EndTable();
-                if (ImGui.Button("Edit NPC Appearance Data##"))
+                if (ImGui.Button("编辑 NPC 外观数据##"))
                 {
                     if (_npcEditorWindow == null)
                     {
@@ -224,14 +249,14 @@ public class EditorWindow : Window, IDisposable
             }
         }
         ImGui.SameLine();
-        if (ImGui.Button("Export for re-use"))
+        if (ImGui.Button("导出以便复用"))
         {
             _fileDialogManager.Reset();
             ImGui.OpenPopup("OpenPathDialog##editorwindow");
         }
         if (ImGui.BeginPopup("OpenPathDialog##editorwindow"))
         {
-            _fileDialogManager.SaveFileDialog("Export quest line data", ".quest", "", ".quest", (isOk, file) =>
+            _fileDialogManager.SaveFileDialog("导出任务线数据", ".quest", "", ".quest", (isOk, file) =>
             {
                 if (isOk)
                 {
@@ -241,8 +266,8 @@ public class EditorWindow : Window, IDisposable
             ImGui.EndPopup();
         }
         ImGui.BeginTable("##Editor Table", 2);
-        ImGui.TableSetupColumn("Objective List", ImGuiTableColumnFlags.WidthFixed, 300);
-        ImGui.TableSetupColumn("Objective Editor", ImGuiTableColumnFlags.WidthStretch, 600);
+        ImGui.TableSetupColumn("目标列表", ImGuiTableColumnFlags.WidthFixed, 300);
+        ImGui.TableSetupColumn("目标编辑器", ImGuiTableColumnFlags.WidthStretch, 600);
         ImGui.TableHeadersRow();
         ImGui.TableNextRow();
         ImGui.TableSetColumnIndex(0);
@@ -283,87 +308,127 @@ public class EditorWindow : Window, IDisposable
             var maximum3dIndicatorDistance = questObjective.Maximum3dIndicatorDistance;
             var dontShowOnMap = questObjective.DontShowOnMap;
             var playerPositionIsLockedDuringEvents = questObjective.PlayerPositionIsLockedDuringEvents;
+
+            // 任务目标触发类型中文映射
+            var objectiveTriggerTypesTranslated = objectiveTriggerTypes.Select(name =>
+            {
+                switch (name)
+                {
+                    case "NormalInteraction": return "正常互动";
+                    case "DoEmote": return "执行表情";
+                    case "SayPhrase": return "说出语句";
+                    case "SubObjectivesFinished": return "子目标完成";
+                    case "KillEnemy": return "击杀敌人";
+                    case "BoundingTrigger": return "边界触发";
+                    default: return name;
+                }
+            }).ToArray();
+
+            // 任务目标状态类型中文映射
+            var objectiveStatusTypesTranslated = objectiveStatusTypes.Select(name =>
+            {
+                switch (name)
+                {
+                    case "Pending": return "待处理";
+                    case "Complete": return "已完成";
+                    default: return name;
+                }
+            }).ToArray();
+
+            // 任务点类型中文映射
+            var questPointTypesTranslated = questPointTypes.Select(name =>
+            {
+                switch (name)
+                {
+                    case "NPC": return "NPC";
+                    case "GroundItem": return "地面物品";
+                    case "TallItem": return "高处物品";
+                    case "StandAndWait": return "站立等待";
+                    default: return name;
+                }
+            }).ToArray();
+
             ImGui.SetNextItemWidth(400);
-            ImGui.LabelText("##objectiveIdLabel", $"Objective Id: " + questObjective.Id);
+            ImGui.LabelText("##objectiveIdLabel", $"任务目标 ID：" + questObjective.Id);
             ImGui.SameLine();
-            if (ImGui.Button("Copy Id To Clipboard"))
+            if (ImGui.Button("复制 ID 到剪贴板"))
             {
                 ImGui.SetClipboardText(questObjective.Id.Trim());
             }
             ImGui.SameLine();
-            if (ImGui.Button("Set Quest Objective Coordinates"))
+            if (ImGui.Button("设置任务目标坐标"))
             {
                 questObjective.Coordinates = Plugin.ClientState.LocalPlayer.Position;
                 questObjective.TerritoryId = Plugin.ClientState.TerritoryType;
                 questObjective.TerritoryDiscriminator = Plugin.AQuestReborn.Discriminator;
             }
             ImGui.SetNextItemWidth(200);
-            ImGui.LabelText("##coordinatesLabel", $"Coordinates: X:{Math.Round(questObjective.Coordinates.X)}," +
+            ImGui.LabelText("##coordinatesLabel", $"坐标：X:{Math.Round(questObjective.Coordinates.X)}," +
                 $"Y:{Math.Round(questObjective.Coordinates.Y)}," +
                 $"Z:{Math.Round(questObjective.Coordinates.Z)}");
             ImGui.SetNextItemWidth(125);
             ImGui.SameLine();
-            ImGui.LabelText("##territoryLabel", $"Territory Id: {questObjective.TerritoryId}");
+            ImGui.LabelText("##territoryLabel", $"区域 ID：{questObjective.TerritoryId}");
             ImGui.SameLine();
             ImGui.SetNextItemWidth(300);
-            ImGui.LabelText("##discriminatorLabel", $"Discriminator: " + questObjective.TerritoryDiscriminator);
+            ImGui.LabelText("##discriminatorLabel", $"判别符：" + questObjective.TerritoryDiscriminator);
             ImGui.SetNextItemWidth(110);
-            if (ImGui.InputFloat("Maximum Indicator Distance##", ref maximum3dIndicatorDistance))
+            if (ImGui.InputFloat("最大指示器距离##", ref maximum3dIndicatorDistance))
             {
                 questObjective.Maximum3dIndicatorDistance = maximum3dIndicatorDistance;
             }
             ImGui.SameLine();
-            if (ImGui.Checkbox("Dont Show On Map##", ref dontShowOnMap))
+            if (ImGui.Checkbox("不在地图上显示##", ref dontShowOnMap))
             {
                 questObjective.DontShowOnMap = dontShowOnMap;
             }
             ImGui.SameLine();
-            if (ImGui.Checkbox("Lock to server/ward/plot/room##", ref usesTerritoryDiscriminator))
+            if (ImGui.Checkbox("锁定到服务器/区/地块/房间##", ref usesTerritoryDiscriminator))
             {
                 questObjective.UsesTerritoryDiscriminator = usesTerritoryDiscriminator;
             }
             if (!questObjective.IsAPrimaryObjective)
             {
-                if (ImGui.Checkbox("Immediately Satisfies Parent Objective##", ref objectiveImmediatelySatisfiesParent))
+                if (ImGui.Checkbox("立即满足父目标##", ref objectiveImmediatelySatisfiesParent))
                 {
                     questObjective.ObjectiveImmediatelySatisfiesParent = objectiveImmediatelySatisfiesParent;
                 }
             }
-            if (ImGui.InputText("Objective Text##", ref objective, 500))
+            if (ImGui.InputText("任务目标描述##", ref objective, 500))
             {
                 questObjective.Objective = objective;
             }
             ImGui.SetNextItemWidth(110);
-            if (ImGui.Combo("Quest Point Type##", ref questPointType, questPointTypes, questPointTypes.Length))
+            if (ImGui.Combo("任务点类型##", ref questPointType, questPointTypesTranslated, questPointTypesTranslated.Length))
             {
                 questObjective.TypeOfQuestPoint = (QuestPointType)questPointType;
             }
             ImGui.SameLine();
             ImGui.SetNextItemWidth(110);
-            if (ImGui.Combo("Objective Quest Status Type##", ref objectiveStatusType, objectiveStatusTypes, objectiveStatusTypes.Length))
+            if (ImGui.Combo("任务目标状态类型##", ref objectiveStatusType, objectiveStatusTypesTranslated, objectiveStatusTypesTranslated.Length))
             {
                 questObjective.ObjectiveStatus = (ObjectiveStatusType)objectiveStatusType;
             }
-            if (ImGui.Combo("Objective Trigger Type##", ref objectiveTriggerType, objectiveTriggerTypes, objectiveTriggerTypes.Length))
+            if (ImGui.Combo("任务目标触发类型##", ref objectiveTriggerType, objectiveTriggerTypesTranslated, objectiveTriggerTypesTranslated.Length))
             {
                 questObjective.TypeOfObjectiveTrigger = (ObjectiveTriggerType)objectiveTriggerType;
             }
             switch (questObjective.TypeOfObjectiveTrigger)
             {
                 case ObjectiveTriggerType.DoEmote:
-                    if (ImGui.InputText("Emote Id##", ref triggerText, 500))
+                    if (ImGui.InputText("表情 ID##", ref triggerText, 500))
                     {
                         questObjective.TriggerText = triggerText;
                     }
                     break;
                 case ObjectiveTriggerType.SayPhrase:
-                    if (ImGui.InputText("Say Phrase##", ref triggerText, 500))
+                    if (ImGui.InputText("说话短语##", ref triggerText, 500))
                     {
                         questObjective.TriggerText = triggerText;
                     }
                     break;
                 case ObjectiveTriggerType.KillEnemy:
-                    if (ImGui.InputText("Enemy Name##", ref triggerText, 500))
+                    if (ImGui.InputText("敌人名称##", ref triggerText, 500))
                     {
                         questObjective.TriggerText = triggerText;
                     }
@@ -375,14 +440,14 @@ public class EditorWindow : Window, IDisposable
                     var maximumY = questObjective.Collider.MaximumY;
                     var minimumZ = questObjective.Collider.MinimumZ;
                     var maximumZ = questObjective.Collider.MaximumZ;
-                    ImGui.TextWrapped($"Min X: {minimumX}, Max X: {maximumX}, Min Y: {minimumY}, Max Y: {maximumY}, Min Z: {minimumZ}, Max Z: {maximumZ}");
-                    if (ImGui.Button("Set Min XZ##"))
+                    ImGui.TextWrapped($"最小 X: {minimumX}, 最大 X: {maximumX}, 最小 Y: {minimumY}, 最大 Y: {maximumY}, 最小 Z: {minimumZ}, 最大 Z: {maximumZ}");
+                    if (ImGui.Button("设置最小 XZ##"))
                     {
                         questObjective.Collider.MinimumX = Plugin.ClientState.LocalPlayer.Position.X;
                         questObjective.Collider.MinimumZ = Plugin.ClientState.LocalPlayer.Position.Z;
                     }
                     ImGui.SameLine();
-                    if (ImGui.Button("Set Max XZ##"))
+                    if (ImGui.Button("设置最大 XZ##"))
                     {
                         if (Plugin.ClientState.LocalPlayer.Position.X < minimumX)
                         {
@@ -404,18 +469,18 @@ public class EditorWindow : Window, IDisposable
                         }
                     }
                     ImGui.SameLine();
-                    if (ImGui.Button("Set Min Y##"))
+                    if (ImGui.Button("设置最小 Y##"))
                     {
                         questObjective.Collider.MinimumY = Plugin.ClientState.LocalPlayer.Position.Y - 5;
                     }
                     ImGui.SameLine();
-                    if (ImGui.Button("Set Max Y##"))
+                    if (ImGui.Button("设置最大 Y##"))
                     {
                         questObjective.Collider.MaximumY = Plugin.ClientState.LocalPlayer.Position.Y;
                     }
                     break;
             }
-            if (ImGui.Button("Edit NPC Transform Data##"))
+            if (ImGui.Button("编辑 NPC 变换数据##"))
             {
                 if (_npcTransformEditorWindow != null)
                 {
@@ -426,20 +491,20 @@ public class EditorWindow : Window, IDisposable
             if (questObjective.IsAPrimaryObjective)
             {
                 ImGui.SameLine();
-                if (ImGui.Button("Preview Quest Objective##"))
+                if (ImGui.Button("预览任务目标##"))
                 {
                     Plugin.RoleplayingQuestManager.SkipToObjective(_roleplayingQuestCreator.CurrentQuest, questObjective.Index);
                     PersistQuest();
                 }
             }
             ImGui.SameLine();
-            if (ImGui.Checkbox("Player Position Is Locked During Events", ref playerPositionIsLockedDuringEvents))
+            if (ImGui.Checkbox("在事件期间锁定玩家位置", ref playerPositionIsLockedDuringEvents))
             {
                 questObjective.PlayerPositionIsLockedDuringEvents = playerPositionIsLockedDuringEvents;
             }
             ImGui.BeginTable("##Event Table", 2);
-            ImGui.TableSetupColumn("Event List", ImGuiTableColumnFlags.WidthFixed, 100);
-            ImGui.TableSetupColumn("Event Editor", ImGuiTableColumnFlags.WidthStretch);
+            ImGui.TableSetupColumn("事件列表", ImGuiTableColumnFlags.WidthFixed, 100);
+            ImGui.TableSetupColumn("事件编辑器", ImGuiTableColumnFlags.WidthStretch);
             ImGui.TableHeadersRow();
             ImGui.TableNextRow();
             ImGui.TableSetColumnIndex(0);
@@ -494,11 +559,61 @@ public class EditorWindow : Window, IDisposable
                 var npcMovementPosition = item.NpcMovementPosition;
                 var npcMovementRotation = item.NpcMovementRotation;
 
-                if (ImGui.BeginTabBar("Event Editor Tabs"))
+                // 事件背景类型中文映射
+                var eventBackgroundTypesTranslated = eventBackgroundTypes.Select(name =>
                 {
-                    if (ImGui.BeginTabItem("Narrative"))
+                    switch (name)
                     {
-                        if (ImGui.Combo("Condition For Event To Occur##", ref dialogueCondition, eventConditionTypes, eventConditionTypes.Length))
+                        case "None": return "无背景";
+                        case "Image": return "图片";
+                        case "Video": return "视频";
+                        case "ImageTransparent": return "透明图片";
+                        default: return name;
+                    }
+                }).ToArray();
+
+                // 事件结束行为中文映射
+                var eventEndTypesTranslated = eventEndTypes.Select(name =>
+                {
+                    switch (name)
+                    {
+                        case "None": return "无行为";
+                        case "EventSkipsToDialogueNumber": return "跳过对话编号";
+                        case "EventEndsEarlyWhenHit": return "被击中时提前结束";
+                        case "EventEndsEarlyWhenHitNoProgression": return "被击中时提前结束（无进度）";
+                        case "EventEndsEarlyWhenHitAndSkipsToObjective": return "被击中时提前结束并跳到目标";
+                        case "EventEndsEarlyWhenHitAndNPCFollowsPlayer": return "被击中时提前结束并NPC跟随玩家";
+                        case "EventEndsEarlyWhenHitAndNPCStopsFollowingPlayer": return "被击中时提前结束并NPC停止跟随玩家";
+                        case "NPCFollowsPlayer": return "NPC跟随玩家";
+                        case "NPCStopsFollowingPlayer": return "NPC停止跟随玩家";
+                        case "EventEndsEarlyWhenHitAndStartsTimer": return "被击中时提前结束并启动计时器";
+                        case "StartsTimer": return "启动计时器";
+                        default: return name;
+                    }
+                }).ToArray();
+
+                // 玩家外观替换类型中文映射
+                var eventPlayerAppearanceApplicationTypesTranslated = eventPlayerAppearanceApplicationTypes.Select(name =>
+                {
+                    switch (name)
+                    {
+                        case "EntireAppearance": return "完整外观";
+                        case "RevertAppearance": return "恢复外观";
+                        case "PreserveRace": return "保留种族";
+                        case "PreserveMasculinityAndFemininity": return "保留性别特征";
+                        case "PreserveAllPhysicalTraits": return "保留所有身体特征";
+                        case "OnlyGlamourerData": return "仅保留 Glamourer 数据";
+                        case "OnlyCustomizeData": return "仅保留外貌数据";
+                        case "OnlyModData": return "仅保留模组数据";
+                        default: return name;
+                    }
+                }).ToArray();
+
+                if (ImGui.BeginTabBar("事件编辑器标签"))
+                {
+                    if (ImGui.BeginTabItem("叙事"))
+                    {
+                        if (ImGui.Combo("事件发生条件##", ref dialogueCondition, eventConditionTypes, eventConditionTypes.Length))
                         {
                             item.ConditionForDialogueToOccur = (EventConditionType)dialogueCondition;
                         }
@@ -507,13 +622,13 @@ public class EditorWindow : Window, IDisposable
                             case EventConditionType.None:
                                 break;
                             case EventConditionType.CompletedSpecificObjectiveId:
-                                if (ImGui.InputText("Objective Id To Complete##", ref objectiveIdToComplete, 40))
+                                if (ImGui.InputText("完成的目标ID##", ref objectiveIdToComplete, 40))
                                 {
                                     item.ObjectiveIdToComplete = objectiveIdToComplete;
                                 }
                                 break;
                             case EventConditionType.PlayerClanId:
-                                if (ImGui.InputText("Clan Id Required##", ref objectiveIdToComplete, 40))
+                                if (ImGui.InputText("所需的氏族ID##", ref objectiveIdToComplete, 40))
                                 {
                                     item.ObjectiveIdToComplete = objectiveIdToComplete;
                                 }
@@ -525,19 +640,19 @@ public class EditorWindow : Window, IDisposable
                                 }
                                 break;
                             case EventConditionType.PlayerClassId:
-                                if (ImGui.InputText("Player Class Id (SMN, RPR, WHM, etc)##", ref objectiveIdToComplete, 40))
+                                if (ImGui.InputText("玩家职业ID (SMN, RPR, WHM等)##", ref objectiveIdToComplete, 40))
                                 {
                                     item.ObjectiveIdToComplete = objectiveIdToComplete;
                                 }
                                 break;
                             case EventConditionType.PlayerOutfitTopId:
-                                if (ImGui.InputText("Player Outfit Top Id##", ref objectiveIdToComplete, 40))
+                                if (ImGui.InputText("玩家上衣ID##", ref objectiveIdToComplete, 40))
                                 {
                                     item.ObjectiveIdToComplete = objectiveIdToComplete;
                                 }
                                 break;
                             case EventConditionType.PlayerOutfitBottomId:
-                                if (ImGui.InputText("Player Outfit Bottom Id##", ref objectiveIdToComplete, 40))
+                                if (ImGui.InputText("玩家下装ID##", ref objectiveIdToComplete, 40))
                                 {
                                     item.ObjectiveIdToComplete = objectiveIdToComplete;
                                 }
@@ -546,64 +661,64 @@ public class EditorWindow : Window, IDisposable
                                 break;
                         }
                         ImGui.SetNextItemWidth(150);
-                        if (ImGui.InputText("Npc Alias##", ref npcAlias, 40))
+                        if (ImGui.InputText("NPC别名##", ref npcAlias, 40))
                         {
                             item.NpcAlias = npcAlias;
                         }
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(150);
-                        if (ImGui.InputText("Npc Name##", ref npcName, 40))
+                        if (ImGui.InputText("NPC名称##", ref npcName, 40))
                         {
                             item.NpcName = npcName;
                         }
-                        if (ImGui.InputText("Dialogue##", ref dialogue, 500))
+                        if (ImGui.InputText("对话##", ref dialogue, 500))
                         {
                             item.Dialogue = dialogue;
                         }
-                        if (ImGui.InputText("Dialogue Audio Path##", ref dialogueAudio, 255))
+                        if (ImGui.InputText("对话音频路径##", ref dialogueAudio, 255))
                         {
                             item.DialogueAudio = dialogueAudio;
                         }
 
-                        if (ImGui.Combo("Box Style##", ref boxStyle, _boxStyles, _boxStyles.Length))
+                        if (ImGui.Combo("对话框样式##", ref boxStyle, _boxStyles, _boxStyles.Length))
                         {
                             item.DialogueBoxStyle = boxStyle;
                         }
                         ImGui.SetNextItemWidth(100);
-                        if (ImGui.InputInt("NPC Face Expression Id##", ref faceExpression))
+                        if (ImGui.InputInt("NPC面部表情ID##", ref faceExpression))
                         {
                             item.FaceExpression = faceExpression;
                         }
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(100);
-                        if (ImGui.InputInt("NPC Body Expression Id##", ref bodyExpression))
+                        if (ImGui.InputInt("NPC身体表情ID##", ref bodyExpression))
                         {
                             item.BodyExpression = bodyExpression;
                         }
                         ImGui.SameLine();
-                        if (ImGui.Checkbox("Loop Animation##", ref loopAnimation))
+                        if (ImGui.Checkbox("循环动画##", ref loopAnimation))
                         {
                             item.LoopAnimation = loopAnimation;
                         }
 
                         ImGui.SetNextItemWidth(100);
-                        if (ImGui.InputInt("Player Face Expression Id##", ref faceExpressionPlayer))
+                        if (ImGui.InputInt("玩家面部表情ID##", ref faceExpressionPlayer))
                         {
                             item.FaceExpressionPlayer = faceExpressionPlayer;
                         }
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(100);
-                        if (ImGui.InputInt("Player Body Expression Id##", ref bodyExpressionPlayer))
+                        if (ImGui.InputInt("玩家身体表情ID##", ref bodyExpressionPlayer))
                         {
                             item.BodyExpressionPlayer = bodyExpressionPlayer;
                         }
                         ImGui.SameLine();
-                        if (ImGui.Checkbox("Loop Player Animation##", ref loopAnimationPlayer))
+                        if (ImGui.Checkbox("循环玩家动画##", ref loopAnimationPlayer))
                         {
                             item.LoopAnimationPlayer = loopAnimationPlayer;
                         }
 
-                        if (ImGui.Combo("Event Background Type##", ref eventBackgroundType, eventBackgroundTypes, eventBackgroundTypes.Length))
+                        if (ImGui.Combo("事件背景类型##", ref eventBackgroundType, eventBackgroundTypesTranslated, eventBackgroundTypesTranslated.Length))
                         {
                             item.TypeOfEventBackground = (EventBackgroundType)eventBackgroundType;
                         }
@@ -611,19 +726,19 @@ public class EditorWindow : Window, IDisposable
                         {
                             case EventBackgroundType.Image:
                             case EventBackgroundType.ImageTransparent:
-                                if (ImGui.InputText("Event Background Image Path##", ref eventBackground, 255))
+                                if (ImGui.InputText("事件背景图片路径##", ref eventBackground, 255))
                                 {
                                     item.EventBackground = eventBackground;
                                 }
                                 break;
                             case EventBackgroundType.Video:
-                                if (ImGui.InputText("Event Background Video Path##", ref eventBackground, 255))
+                                if (ImGui.InputText("事件背景视频路径##", ref eventBackground, 255))
                                 {
                                     item.EventBackground = eventBackground;
                                 }
                                 break;
                         }
-                        if (ImGui.Combo("Event End Behaviour##", ref eventEndBehaviour, eventEndTypes, eventEndTypes.Length))
+                        if (ImGui.Combo("事件结束行为##", ref eventEndBehaviour, eventEndTypesTranslated, eventEndTypesTranslated.Length))
                         {
                             item.EventEndBehaviour = (EventBehaviourType)eventEndBehaviour;
                         }
@@ -631,39 +746,39 @@ public class EditorWindow : Window, IDisposable
                         switch (item.EventEndBehaviour)
                         {
                             case EventBehaviourType.EventSkipsToDialogueNumber:
-                                if (ImGui.InputInt("Event Number To Skip To##", ref eventNumberToSkipTo))
+                                if (ImGui.InputInt("跳过到的事件编号##", ref eventNumberToSkipTo))
                                 {
                                     item.EventNumberToSkipTo = eventNumberToSkipTo;
                                 }
                                 break;
                             case EventBehaviourType.EventEndsEarlyWhenHitAndSkipsToObjective:
-                                if (ImGui.InputInt("Objective Number To Skip To##", ref objectiveNumberToSkipTo))
+                                if (ImGui.InputInt("跳过到的目标编号##", ref objectiveNumberToSkipTo))
                                 {
                                     item.ObjectiveNumberToSkipTo = objectiveNumberToSkipTo;
                                 }
                                 break;
                             case EventBehaviourType.EventEndsEarlyWhenHitAndStartsTimer:
                             case EventBehaviourType.StartsTimer:
-                                if (ImGui.InputInt("Time Limit (Milliseconds)##", ref timeLimit))
+                                if (ImGui.InputInt("时间限制（毫秒）##", ref timeLimit))
                                 {
                                     item.TimeLimit = timeLimit;
                                 }
                                 break;
                         }
-                        if (ImGui.Checkbox("Event Has No Reading##", ref eventHasNoReading))
+                        if (ImGui.Checkbox("事件无读取##", ref eventHasNoReading))
                         {
                             item.EventHasNoReading = eventHasNoReading;
                         }
                         ImGui.EndTabItem();
                     }
-                    if (ImGui.BeginTabItem("Branching Choices## we're unique"))
+                    if (ImGui.BeginTabItem("分支选择## we're unique"))
                     {
                         DrawBranchingChoicesMenu();
                         ImGui.EndTabItem();
                     }
-                    if (ImGui.BeginTabItem("Appearance Swap##we're unique and such"))
+                    if (ImGui.BeginTabItem("外观替换##we're unique and such"))
                     {
-                        if (ImGui.InputText("Npc Appearance Swap##", ref appearanceSwap, 4000))
+                        if (ImGui.InputText("NPC外观替换##", ref appearanceSwap, 4000))
                         {
                             item.AppearanceSwap = appearanceSwap;
                         }
@@ -671,7 +786,7 @@ public class EditorWindow : Window, IDisposable
                         {
                             ImGui.BeginDisabled();
                         }
-                        if (ImGui.Button(_isCreatingAppearance ? "Creating Appearance Please Wait" : "Create NPC Appearance From Current Player Appearance##"))
+                        if (ImGui.Button(_isCreatingAppearance ? "正在创建外观，请稍候" : "从当前玩家外观创建NPC外观##"))
                         {
                             Task.Run(() =>
                             {
@@ -690,11 +805,11 @@ public class EditorWindow : Window, IDisposable
                         {
                             ImGui.EndDisabled();
                         }
-                        if (ImGui.InputText("Player Appearance Swap##", ref playerAppearanceSwap, 4000))
+                        if (ImGui.InputText("玩家外观替换##", ref playerAppearanceSwap, 4000))
                         {
                             item.PlayerAppearanceSwap = playerAppearanceSwap;
                         }
-                        if (ImGui.Combo("Player Appearance Swap Type", ref playerAppearanceSwapType, eventPlayerAppearanceApplicationTypes, eventPlayerAppearanceApplicationTypes.Length))
+                        if (ImGui.Combo("玩家外观替换类型", ref playerAppearanceSwapType, eventPlayerAppearanceApplicationTypesTranslated, eventPlayerAppearanceApplicationTypesTranslated.Length))
                         {
                             item.PlayerAppearanceSwapType = (AppearanceSwapType)playerAppearanceSwapType;
                         }
@@ -702,7 +817,7 @@ public class EditorWindow : Window, IDisposable
                         {
                             ImGui.BeginDisabled();
                         }
-                        if (ImGui.Button(_isCreatingAppearance ? "Creating Appearance Please Wait" : "Create Player Appearance From Current Player Appearance##"))
+                        if (ImGui.Button(_isCreatingAppearance ? "正在创建外观，请稍候" : "从当前玩家外观创建玩家外观##"))
                         {
                             Task.Run(() =>
                             {
@@ -723,27 +838,27 @@ public class EditorWindow : Window, IDisposable
                         }
                         ImGui.EndTabItem();
                     }
-                    if (ImGui.BeginTabItem("Positioning## we're unique"))
+                    if (ImGui.BeginTabItem("定位## we're unique"))
                     {
-                        if (ImGui.Checkbox("Looks At Player During Event", ref looksAtPlayerDuringEvent))
+                        if (ImGui.Checkbox("事件期间看着玩家", ref looksAtPlayerDuringEvent))
                         {
                             item.LooksAtPlayerDuringEvent = looksAtPlayerDuringEvent;
                         }
-                        if (ImGui.Checkbox("Event Sets New NPC Position", ref eventSetsNewNpcPosition))
+                        if (ImGui.Checkbox("事件设置新NPC位置", ref eventSetsNewNpcPosition))
                         {
                             item.EventSetsNewNpcCoordinates = eventSetsNewNpcPosition;
                         }
                         if (eventSetsNewNpcPosition)
                         {
-                            if (ImGui.DragFloat3("Npc Movement Position", ref npcMovementPosition))
+                            if (ImGui.DragFloat3("NPC移动位置", ref npcMovementPosition))
                             {
                                 item.NpcMovementPosition = npcMovementPosition;
                             }
-                            if (ImGui.DragFloat3("Npc Movement Rotation", ref npcMovementRotation))
+                            if (ImGui.DragFloat3("NPC移动旋转", ref npcMovementRotation))
                             {
                                 item.NpcMovementRotation = npcMovementRotation;
                             }
-                            if (ImGui.Button("Set Coordinates Based On Player Position"))
+                            if (ImGui.Button("基于玩家位置设置坐标"))
                             {
                                 item.NpcMovementPosition = Plugin.ClientState.LocalPlayer.Position;
                                 item.NpcMovementRotation = new Vector3(0, CoordinateUtility.ConvertRadiansToDegrees(Plugin.ClientState.LocalPlayer.Rotation) + 180, 0);
@@ -759,8 +874,8 @@ public class EditorWindow : Window, IDisposable
     private void DrawBranchingChoicesMenu()
     {
         ImGui.BeginTable("##Branching Choices Table", 2);
-        ImGui.TableSetupColumn("Branching Choices List", ImGuiTableColumnFlags.WidthFixed, 150);
-        ImGui.TableSetupColumn("Branching Choices Editor", ImGuiTableColumnFlags.WidthStretch);
+        ImGui.TableSetupColumn("分支选择列表", ImGuiTableColumnFlags.WidthFixed, 150);
+        ImGui.TableSetupColumn("分支选择编辑器", ImGuiTableColumnFlags.WidthStretch);
         ImGui.TableHeadersRow();
         ImGui.TableNextRow();
         ImGui.TableSetColumnIndex(0);
@@ -796,32 +911,46 @@ public class EditorWindow : Window, IDisposable
                     var eventToJumpToFailure = item.EventToJumpToFailure;
                     var minimumDiceRoll = item.MinimumDiceRoll;
                     var branchingChoiceTypes = Enum.GetNames(typeof(BranchingChoiceType));
-                    if (ImGui.InputText("Choice Text##", ref choiceText, 255))
+
+                    // 分支选择类型中文映射
+                    var branchingChoiceTypesTranslated = branchingChoiceTypes.Select(name =>
+                    {
+                        switch (name)
+                        {
+                            case "SkipToEventNumber": return "跳过至事件编号";
+                            case "BranchingQuestline": return "分支任务线";
+                            case "RollD20ThenSkipToEventNumber": return "掷D20后跳过至事件编号";
+                            case "SkipToEventNumberRandomized": return "随机跳过至事件编号";
+                            default: return name;
+                        }
+                    }).ToArray();
+
+                    if (ImGui.InputText("选择文本##", ref choiceText, 255))
                     {
                         item.ChoiceText = choiceText;
                     }
-                    if (ImGui.Combo("Branching Choice Type##", ref choiceType, branchingChoiceTypes, branchingChoiceTypes.Length))
+                    if (ImGui.Combo("分支选择类型##", ref choiceType, branchingChoiceTypesTranslated, branchingChoiceTypesTranslated.Length))
                     {
                         item.ChoiceType = (BranchingChoiceType)choiceType;
                     }
                     switch (item.ChoiceType)
                     {
                         case BranchingChoiceType.SkipToEventNumber:
-                            if (ImGui.InputInt("Event Number To Jump To##", ref eventToJumpTo))
+                            if (ImGui.InputInt("跳转到的事件编号##", ref eventToJumpTo))
                             {
                                 item.EventToJumpTo = eventToJumpTo;
                             }
                             break;
                         case BranchingChoiceType.RollD20ThenSkipToEventNumber:
-                            if (ImGui.InputInt("Event Number To Jump To Success##", ref eventToJumpTo))
+                            if (ImGui.InputInt("成功时跳转的事件编号##", ref eventToJumpTo))
                             {
                                 item.EventToJumpTo = eventToJumpTo;
                             }
-                            if (ImGui.InputInt("Event Number To Jump To Failure##", ref eventToJumpToFailure))
+                            if (ImGui.InputInt("失败时跳转的事件编号##", ref eventToJumpToFailure))
                             {
                                 item.EventToJumpToFailure = eventToJumpToFailure;
                             }
-                            if (ImGui.InputInt("Minimum Roll For Success", ref minimumDiceRoll))
+                            if (ImGui.InputInt("成功的最低骰子点数", ref minimumDiceRoll))
                             {
                                 if (minimumDiceRoll > 20)
                                 {
@@ -850,7 +979,7 @@ public class EditorWindow : Window, IDisposable
                                     {
                                         var randomizedEventToJumpTo = item.RandomizedEventToSkipTo[i];
                                         ImGui.SetNextItemWidth(200);
-                                        if (ImGui.InputInt($"Randomized Event Number To Jump To##{i}", ref randomizedEventToJumpTo))
+                                        if (ImGui.InputInt($"跳转到的随机事件编号##{i}", ref randomizedEventToJumpTo))
                                         {
                                             item.RandomizedEventToSkipTo[i] = randomizedEventToJumpTo;
                                         }
@@ -860,7 +989,7 @@ public class EditorWindow : Window, IDisposable
                                             ImGui.BeginDisabled();
                                         }
                                         ImGui.SameLine();
-                                        if (ImGui.Button($"Delete##{i}"))
+                                        if (ImGui.Button($"删除##{i}"))
                                         {
                                             item.RandomizedEventToSkipTo.RemoveAt(i);
                                             break;
@@ -879,14 +1008,14 @@ public class EditorWindow : Window, IDisposable
                             ImGui.EndChild();
                             ImGui.EndGroup();
                             ImGui.PopID();
-                            if (ImGui.Button($"Add Randomized Skip##"))
+                            if (ImGui.Button($"添加随机跳转##"))
                             {
                                 item.RandomizedEventToSkipTo.Add(0);
                                 break;
                             }
                             break;
                         case BranchingChoiceType.BranchingQuestline:
-                            if (ImGui.Button("Configure Branching Questline"))
+                            if (ImGui.Button("配置分支任务线"))
                             {
                                 if (_subEditorWindow == null)
                                 {
@@ -898,14 +1027,14 @@ public class EditorWindow : Window, IDisposable
                                 _subEditorWindow.RefreshMenus();
                             }
                             ImGui.SameLine();
-                            if (ImGui.Button("Import Branching Questline"))
+                            if (ImGui.Button("导入分支任务线"))
                             {
                                 _fileDialogManager.Reset();
                                 ImGui.OpenPopup("OpenPathDialog##editorwindow");
                             }
                             if (ImGui.BeginPopup("OpenPathDialog##editorwindow"))
                             {
-                                _fileDialogManager.OpenFileDialog("Select quest line data", ".quest", (isOk, file) =>
+                                _fileDialogManager.OpenFileDialog("选择任务线数据", ".quest", (isOk, file) =>
                                 {
                                     if (isOk)
                                     {
@@ -935,21 +1064,21 @@ public class EditorWindow : Window, IDisposable
                 {
                     RefreshMenus();
                 }
-                if (ImGui.Button("Add"))
+                if (ImGui.Button("添加"))
                 {
                     var branchingChoice = new BranchingChoice();
                     branchingChoices.Add(branchingChoice);
                     branchingChoice.RoleplayingQuest.ConfigureSubQuest(_roleplayingQuestCreator.CurrentQuest);
                     branchingChoice.RoleplayingQuest.IsSubQuest = true;
-                    _branchingChoices = Utility.FillNewList(branchingChoices.Count, "Choice");
+                    _branchingChoices = Utility.FillNewList(branchingChoices.Count, "选择");
                     _selectedBranchingChoice = branchingChoices.Count - 1;
                     RefreshMenus();
                 }
                 ImGui.SameLine();
-                if (ImGui.Button("Remove"))
+                if (ImGui.Button("移除"))
                 {
                     branchingChoices.RemoveAt(_selectedBranchingChoice);
-                    _branchingChoices = Utility.FillNewList(branchingChoices.Count, "Choice");
+                    _branchingChoices = Utility.FillNewList(branchingChoices.Count, "选择");
                     _selectedBranchingChoice = branchingChoices.Count - 1;
                     RefreshMenus();
                 }
@@ -968,27 +1097,27 @@ public class EditorWindow : Window, IDisposable
                 _selectedBranchingChoice = 0;
                 RefreshMenus();
             }
-            if (ImGui.Button("Add"))
+            if (ImGui.Button("添加"))
             {
                 questText.Add(new QuestEvent());
-                _dialogues = Utility.FillNewList(questText.Count, "Event");
+                _dialogues = Utility.FillNewList(questText.Count, "事件");
                 _selectedEvent = questText.Count - 1;
                 RefreshMenus();
             }
             ImGui.SameLine();
-            if (ImGui.Button("Remove"))
+            if (ImGui.Button("移除"))
             {
                 questText.RemoveAt(_selectedEvent);
-                _dialogues = Utility.FillNewList(questText.Count, "Event");
+                _dialogues = Utility.FillNewList(questText.Count, "事件");
                 _selectedEvent = questText.Count - 1;
                 RefreshMenus();
             }
-            if (ImGui.Button("Add Clipboard"))
+            if (ImGui.Button("添加剪贴板"))
             {
                 _roleplayingQuestCreator.StoryScriptToObjectiveEvents(ImGui.GetClipboardText().Replace("…","..."), _objectiveInFocus);
                 RefreshMenus();
             }
-            if (ImGui.Button("To Clipboard"))
+            if (ImGui.Button("复制到剪贴板"))
             {
                 ImGui.SetClipboardText(_roleplayingQuestCreator.ObjectiveToStoryScriptFormat(_objectiveInFocus));
             }
@@ -1000,8 +1129,8 @@ public class EditorWindow : Window, IDisposable
         if (_objectiveInFocus != null)
         {
             var questText = _objectiveInFocus.QuestText;
-            _dialogues = Utility.FillNewList(questText.Count, "Event");
-            _nodeNames = Utility.FillNewList(_roleplayingQuestCreator.CurrentQuest.QuestObjectives.Count, "Objective");
+            _dialogues = Utility.FillNewList(questText.Count, "事件");
+            _nodeNames = Utility.FillNewList(_roleplayingQuestCreator.CurrentQuest.QuestObjectives.Count, "目标");
             if (questText.Count > 0)
             {
                 if (_selectedEvent < questText.Count)
@@ -1011,7 +1140,7 @@ public class EditorWindow : Window, IDisposable
                     {
                         _selectedBranchingChoice = choices.Count - 1;
                     }
-                    _branchingChoices = Utility.FillNewList(choices.Count, "Choice");
+                    _branchingChoices = Utility.FillNewList(choices.Count, "选择");
                 }
             }
             else
@@ -1029,9 +1158,9 @@ public class EditorWindow : Window, IDisposable
             _branchingChoices = new string[] { };
             _nodeNames = new string[] { };
             _dialogues = new string[] { };
-            _dialogues = Utility.FillNewList(0, "Event");
-            _nodeNames = Utility.FillNewList(0, "Objective");
-            _branchingChoices = Utility.FillNewList(0, "Choice");
+            _dialogues = Utility.FillNewList(0, "事件");
+            _nodeNames = Utility.FillNewList(0, "目标");
+            _branchingChoices = Utility.FillNewList(0, "选择");
             _selectedBranchingChoice = 0;
             _selectedEvent = 0;
         }
@@ -1055,13 +1184,13 @@ public class EditorWindow : Window, IDisposable
                 }
                 if (ImGui.TreeNode((level == 0 ? "(" + i + ") " : "") + "" + objective.Objective + "##" + i))
                 {
-                    if (ImGui.Button("Edit##" + i))
+                    if (ImGui.Button("编辑##" + i))
                     {
                         _objectiveInFocus = objective;
                         RefreshMenus();
                     }
                     ImGui.SameLine();
-                    if (ImGui.Button("Add Sub Objective##" + i))
+                    if (ImGui.Button("添加子目标##" + i))
                     {
                         objective.SubObjectives.Add(new QuestObjective()
                         {
@@ -1075,7 +1204,7 @@ public class EditorWindow : Window, IDisposable
                         ImGui.BeginDisabled();
                     }
                     ImGui.SameLine();
-                    if (ImGui.Button("Delete##" + i))
+                    if (ImGui.Button("删除##" + i))
                     {
                         objective.Invalidate = true;
                     }
@@ -1104,14 +1233,14 @@ public class EditorWindow : Window, IDisposable
         ImGui.PushID("Vertical Scroll");
         ImGui.BeginGroup();
         const ImGuiWindowFlags child_flags = ImGuiWindowFlags.MenuBar;
-        var child_id = ImGui.GetID("Objective");
+        var child_id = ImGui.GetID("目标");
         bool child_is_visible = ImGui.BeginChild(child_id, new Vector2(width, 600), true, child_flags);
         DrawQuestObjectivesRecursive(_roleplayingQuestCreator.CurrentQuest.QuestObjectives, 0);
         ImGui.EndChild();
         ImGui.EndGroup();
         ImGui.PopID();
-        ImGui.TextUnformatted("Hold Shift To Delete Objectives");
-        if (ImGui.Button("Add Dominant Objective"))
+        ImGui.TextUnformatted("按住 Shift 键删除目标");
+        if (ImGui.Button("添加主目标"))
         {
             _npcTransformEditorWindow.RefreshMenus();
             _roleplayingQuestCreator.AddQuestObjective(new QuestObjective()

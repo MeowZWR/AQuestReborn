@@ -57,25 +57,25 @@ public class MainWindow : Window, IDisposable
         {
             if (!string.IsNullOrEmpty(Plugin.Configuration.QuestInstallFolder) && Directory.Exists(Plugin.Configuration.QuestInstallFolder))
             {
-                if (ImGui.BeginTabItem("Installed Quests"))
+                if (ImGui.BeginTabItem("安装任务"))
                 {
                     DrawInstalledQuests();
                     ImGui.EndTabItem();
                 }
-                if (ImGui.BeginTabItem("Quest Objectives"))
+                if (ImGui.BeginTabItem("任务目标"))
                 {
                     DrawQuestObjectives();
                     ImGui.EndTabItem();
                 }
             }
-            if (ImGui.BeginTabItem("Settings"))
+            if (ImGui.BeginTabItem("插件设置"))
             {
                 DrawInitialSetup();
                 ImGui.EndTabItem();
             }
             ImGui.EndTabBar();
         }
-        if (ImGui.Button("Donate To Futher Development", new Vector2(Size.Value.X, 50)))
+        if (ImGui.Button("捐赠以支持进一步开发", new Vector2(Size.Value.X, 50)))
         {
             ProcessStartInfo ProcessInfo = new ProcessStartInfo();
             Process Process = new Process();
@@ -87,7 +87,7 @@ public class MainWindow : Window, IDisposable
 
     private void DrawInitialSetup()
     {
-        if (ImGui.Button("Pick Empty Folder For Custom Quest Installs (Cannot Require Admin Rights)"))
+        if (ImGui.Button("选择一个空文件夹用于自定义任务安装（无需管理员权限）"))
         {
             _fileDialogManager.Reset();
             ImGui.OpenPopup("OpenPathDialog##editorwindow");
@@ -141,8 +141,8 @@ public class MainWindow : Window, IDisposable
     private void InstalledQuestsTab()
     {
         ImGui.BeginTable("##Installed Quests", 2);
-        ImGui.TableSetupColumn("Installed Quest Selector", ImGuiTableColumnFlags.WidthFixed, 150);
-        ImGui.TableSetupColumn("Installed Quest Information", ImGuiTableColumnFlags.WidthStretch);
+        ImGui.TableSetupColumn("任务选择器", ImGuiTableColumnFlags.WidthFixed, 150);
+        ImGui.TableSetupColumn("任务信息", ImGuiTableColumnFlags.WidthStretch);
         ImGui.TableHeadersRow();
         ImGui.TableNextRow();
         ImGui.TableSetColumnIndex(0);
@@ -162,14 +162,14 @@ public class MainWindow : Window, IDisposable
             {
                 startingLocation = _territorySheets.GetRow((uint)roleplayingQuest.QuestObjectives[0].TerritoryId).PlaceName.Value.Name.ToString();
             }
-            ImGui.Text($"Author: {roleplayingQuest.QuestAuthor}");
-            ImGui.Text($"Quest Name: {roleplayingQuest.QuestName}");
-            ImGui.TextWrapped($"Description: {roleplayingQuest.QuestDescription}");
+            ImGui.Text($"作者名称：{roleplayingQuest.QuestAuthor}");
+            ImGui.Text($"任务名称：{roleplayingQuest.QuestName}");
+            ImGui.TextWrapped($"任务描述：{roleplayingQuest.QuestDescription}");
             if (!string.IsNullOrEmpty(startingLocation))
             {
-                ImGui.Text($"Starting Location: {startingLocation}");
+                ImGui.Text($"起始地点：{startingLocation}");
             }
-            if (ImGui.Button("Reset Quest Progress"))
+            if (ImGui.Button("重置任务进度"))
             {
                 try
                 {
@@ -184,12 +184,12 @@ public class MainWindow : Window, IDisposable
                 Plugin.SaveProgress();
             }
             ImGui.SameLine();
-            if (ImGui.Button("Edit Quest"))
+            if (ImGui.Button("编辑任务"))
             {
                 Plugin.EditorWindow.RoleplayingQuestCreator.EditQuest(Path.Combine(Plugin.Configuration.QuestInstallFolder, roleplayingQuest.QuestName + @"\main.quest"));
                 Plugin.EditorWindow.IsOpen = true;
             }
-            if (ImGui.Button("Open Directory"))
+            if (ImGui.Button("打开目录"))
             {
                 string path = Path.Combine(Plugin.Configuration.QuestInstallFolder, roleplayingQuest.QuestName);
                 ProcessStartInfo ProcessInfo;
@@ -206,7 +206,7 @@ public class MainWindow : Window, IDisposable
                 Process = Process.Start(ProcessInfo);
             }
             ImGui.SameLine();
-            if (ImGui.Button("Export Quest"))
+            if (ImGui.Button("导出任务"))
             {
                 string foundPath = roleplayingQuest.FoundPath;
                 string zipPath = "";
@@ -234,7 +234,7 @@ public class MainWindow : Window, IDisposable
                 Process = Process.Start(ProcessInfo);
             }
             ImGui.SameLine();
-            if (ImGui.Button("Recover Quest"))
+            if (ImGui.Button("恢复任务"))
             {
                 string foundPath = roleplayingQuest.FoundPath;
                 string recoveryPath = "";
@@ -270,18 +270,18 @@ public class MainWindow : Window, IDisposable
             }
             ImGui.SetNextItemWidth(ImGui.GetColumnWidth());
             ImGui.ListBox("##installedQuestInformation", ref _currentSelectedInstalledQuest, questItems.ToArray(), questItems.Count, 10);
-            if (ImGui.Button("Quest Creator"))
+            if (ImGui.Button("任务创建器"))
             {
                 Plugin.EditorWindow.IsOpen = true;
             }
-            if (ImGui.Button("Install Quest"))
+            if (ImGui.Button("安装任务"))
             {
                 _fileDialogManager.Reset();
                 ImGui.OpenPopup("OpenPathDialog##editorwindow");
             }
             if (ImGui.BeginPopup("OpenPathDialog##editorwindow"))
             {
-                _fileDialogManager.OpenFileDialog("Select quest file", ".qmp", (isOk, file) =>
+                _fileDialogManager.OpenFileDialog("选择任务文件", ".qmp", (isOk, file) =>
                 {
                     if (isOk)
                     {
@@ -291,7 +291,7 @@ public class MainWindow : Window, IDisposable
                 }, 0, null, true);
                 ImGui.EndPopup();
             }
-            if (ImGui.Button("Re-scan Quests"))
+            if (ImGui.Button("重新扫描任务"))
             {
                 Plugin.RoleplayingQuestManager.ScanDirectory();
             }
