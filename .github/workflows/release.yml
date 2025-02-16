@@ -60,7 +60,7 @@ jobs:
           omitBodyDuringUpdate: true
           allowUpdates: true
           replacesArtifacts: true
-          token: ${{ secrets.RELEASE }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Write out repo.json
         run: |
