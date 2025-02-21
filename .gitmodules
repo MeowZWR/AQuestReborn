@@ -15,7 +15,8 @@
 	url = https://github.com/Sebane1/MediaGameObjects.git
 [submodule "Brio"]
 	path = Brio
-	url = https://github.com/Sebane1/Brio.git
+	url = https://github.com/MeowZWR/Brio.git
+	branch = AquestReborn
 [submodule "LooseTextureCompilerCore"]
 	path = LooseTextureCompilerCore
 	url = https://github.com/Sebane1/LooseTextureCompilerCore.git
