@@ -8,8 +8,8 @@
       "Questing"
     ],
     "InternalName": "AQuestReborn",
-    "AssemblyVersion": "0.1.6.2",
-    "TestingAssemblyVersion": "0.1.6.2",
+    "AssemblyVersion": "0.1.6.3",
+    "TestingAssemblyVersion": "0.1.6.3",
     "RepoUrl": "https://github.com/MeowZWR/AQuestReborn",
     "ApplicableVersion": "any",
     "DalamudApiLevel": 11,
@@ -18,9 +18,9 @@
     "IsTestingExclusive": "False",
     "DownloadCount": 0,
     "LastUpdate": 0,
-    "DownloadLinkInstall": "https://meowrs.com/https://github.com/MeowZWR/AQuestReborn/releases/download/0.1.6.2-cn/AQuestReborn.zip",
-    "DownloadLinkTesting": "https://meowrs.com/https://github.com/MeowZWR/AQuestReborn/releases/download/0.1.6.2-cn/AQuestReborn.zip",
-    "DownloadLinkUpdate": "https://meowrs.com/https://github.com/MeowZWR/AQuestReborn/releases/download/0.1.6.2-cn/AQuestReborn.zip",
+    "DownloadLinkInstall": "https://meowrs.com/https://github.com/MeowZWR/AQuestReborn/releases/download/0.1.6.3-cn/AQuestReborn.zip",
+    "DownloadLinkTesting": "https://meowrs.com/https://github.com/MeowZWR/AQuestReborn/releases/download/0.1.6.3-cn/AQuestReborn.zip",
+    "DownloadLinkUpdate": "https://meowrs.com/https://github.com/MeowZWR/AQuestReborn/releases/download/0.1.6.3-cn/AQuestReborn.zip",
     "IconUrl": "https://meowrs.com/https://raw.githubusercontent.com/MeowZWR/AQuestReborn/refs/heads/master/AQuestReborn-C256.png"
   }
 ]
